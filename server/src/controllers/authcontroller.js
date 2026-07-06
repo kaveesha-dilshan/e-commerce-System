@@ -56,9 +56,40 @@ export const loginUser = async (req, res) => {
         const { email, password } = req.body;
 
         if (!email || !password){
-            re
+            res.status(400).json({
+                message: "Email and Password required"
+            })
         }
+        const user = await User.findOne({ email });
+
+        if (!user) { 
+            res.status(400).json({
+                message: "User cannot Find"
+            })
+        }
+        const isMatch = await bcrypt.compare(
+            password,
+            user.password
+        );
+        if (!isMatch) {
+            res.status(400).json({
+                message: "Invalid credentials"
+            })
+        }
+
+        res.status(200).json({
+            message: "Login Succussfull",
+            token: generateToken(user._id),
+            user: {
+                id: user._id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+            }
+        })
     } catch (error) {
-        
+        res.status(500).json({
+            message: error.message,
+        })
     }
 }
