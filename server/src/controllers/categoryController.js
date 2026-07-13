@@ -33,3 +33,65 @@ export const createCategory = async (req, res) => {
         })
     }
 }
+
+export const getCategorise = async (req, res) => {
+    try {
+        const categories = await Category.find().sort({
+            createdAt: -1,
+        });
+
+        res.status(200).json(categories);
+    } catch (error) {
+        res.status(500).json({
+            message: error.message,
+        })
+    }
+}
+
+export const getCategoryById = async (req, res) => {
+    try {
+        const category = await Category.findById(req.params.id);
+
+        if (!category) {
+            return res.status(404).json({
+                message: "Category not found",
+            })
+        }
+        res.status(200).json(category);
+    } catch (error) {
+        res.status(500).json({
+            message: error.message,
+        })
+    }
+}
+
+export const updateCategory = async (req, res) => {
+    try {
+        const { name, description } = req.body;
+
+        const category = await Category.findById(req.params.id);
+        if (!category){
+            return res.status(404).json({
+                message: "Category not found",
+            })
+        }
+
+        category.name = name || category.name;
+        category.description = description || category.description;
+
+        await category.save();
+
+        res.status(200).json({
+            message: "Category Update successfully!",
+            category: {
+                id: category._id,
+                name: category.name,
+                description: category.description
+            }
+        })
+    } catch (error) {
+        res.status(500).json({
+            message: error.message
+        })
+    }
+}
