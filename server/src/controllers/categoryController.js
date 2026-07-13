@@ -95,3 +95,25 @@ export const updateCategory = async (req, res) => {
         })
     }
 }
+
+export const deleteCategory = async (req, res) => {
+    try {
+        const category = await Category.findById(req.params.id);
+
+        if(!category) {
+            return res.status(404).json({
+                message: "Category not founded",
+            })
+        }
+
+        await category.deleteOne();
+
+        res.status(200).json({
+            message: "Catergory called --" + category.name + "-- deleted",
+        })
+    } catch (error) {
+        res.status(500).json({
+            message: error,
+        })
+    }
+}
