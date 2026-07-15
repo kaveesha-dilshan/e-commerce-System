@@ -22,7 +22,7 @@ export const createCategory = async (req, res) => {
             name,
             description,
         });
-        console.log("hello");
+        // console.log("hello");
         return res.status(201).json({
             message: "Category created successfully",
             category
